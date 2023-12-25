@@ -2,14 +2,16 @@
 
 ## 安装环境
 
+```python
 pip install django==4.2
 pip install django_summernote
 pip install django_taggit
 pip install Pillow
+```
+
 ## 首页
 
 ![01.png](assets/01.png)
-
 
 ## 文章列表
 
@@ -22,7 +24,6 @@ pip install Pillow
 ## 文章详情页
 
 ![04.png](assets/04.png)
-
 
 ## 后台页面
 
