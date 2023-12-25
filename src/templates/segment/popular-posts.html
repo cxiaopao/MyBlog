@@ -1,0 +1,15 @@
+<!--Popular article-->
+<div class="mb-2">
+    <h2 class="py-2 border-b">
+        <span class="border-b-4 border-primary text-xl font-bold py-2">热门文章</span>
+    </h2>
+    <ul>
+        {% for popular_post in popular_posts %}
+            <li class="py-2 border-b mb-3 ">
+                <a class="hover:text-primary flex justify-between items-center" href="{{ popular_post.get_post_url }}">
+                    <span><i class="fa fa-angle-right pr-1"></i>{{ popular_post.title }}</span>
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+</div>

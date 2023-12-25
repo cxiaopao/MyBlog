@@ -1,0 +1,170 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load core_extras %}
+
+{% block title %}
+    {{ item.title }}
+{% endblock %}
+
+<!--Breadcrumbs-->
+{% block breadcrumb %}
+    <nav class="bg-gray-50">
+        <div class="container">
+            <ul class="mx-4 py-2 inline-flex items-center space-x-1 md:space-x-3 text-sm text-blog-dark">
+                <li><a href="/"><i class="fa fa-home mr-1"></i>首页</a></li>
+                <li><a href="{% url 'posts' %}"><i class="fa fa-chevron-right mr-2"></i>文章列表</a></li>
+                <li><i class="fa fa-chevron-right mr-2"></i><span class="text-primary">{{ item.title }}</span></li>
+            </ul>
+        </div>
+    </nav>
+{% endblock %}
+
+{% block content %}
+    <!--Main-->
+    <main class="container my-4 flex flex-col md:flex-row items-start">
+        <!--左侧边栏-->
+        <div class="w-full md:w-3/4 bg-white p-2 md:mr-4">
+            <div class="mb-4"><span class="text-white text-sm bg-primary px-1 py-2">{{ item.category.name }}</span>
+            </div>
+            <div class="mb-4">
+                <!--标题-->
+                <h2 class="text-4xl mb-2">{{ item.title }}</h2>
+                <!--作者&信息-->
+                <div class="flex justify-between text-sm text-gray-400">
+                    <div class="flex items-center space-x-4">
+                        <img class="rounded-full w-6 h-6" src="{{ item.author.profile.avatar.url }}"
+                             alt="{{ item.author.profile.fullname }}"/>
+                        <span>{{ item.author.profile.fullname }}</span>
+                        <span><i class="fa fa-clock mr-2"></i> {{ item.created_time }}</span>
+                    </div>
+                    <div>
+                        <span class="mr-1"><i class="fa fa-comment mr-1"></i> {{ item.comments.all | length }}</span>
+                        <span><i class="fa fa-eye mr-1"></i> {{ item.views }}</span>
+                    </div>
+                </div>
+                <!--正文-->
+                <div class="my-6 px-4">
+                    {% if item.img %}
+                        <img class="w-full h-2/3" src="{{ item.img.url }}" alt="">
+                    {% endif %}
+                    <div class="mt-2">
+                        {{ item.body | safe }}
+                    </div>
+                </div>
+                <!--文章标签-->
+                <div class="my-4 px-4 border-y py-6 space-x-4 text-sm">
+                    <span><i class="fa fa-tag mr-1"></i> 标签：</span>
+                    {% for tag in item.tags.all %}
+                        <span class="py-1 px-2 bg-blog-dark text-white uppercase"><a
+                                href="{% url 'posts' %}?tag={{ tag.slug }}">{{ tag }}</a></span>
+                    {% endfor %}
+
+                </div>
+                <!--上一篇 &下一篇-->
+                <div class="my-6 flex flex-col md:flex-row justify-between">
+                    <div class="flex w-full md:w-1/2 justify-between items-center space-x-2 md:border-r">
+                        {% if  prev_post %}
+                            <div class="w-1/4">
+                                {% if prev_post.img %}
+                                    <img class="w-full h-20 rounded-md" src="{{ prev_post.img.url }}"
+                                         alt="{{ prev_post.img.url }}">
+                                {% endif %}
+                            </div>
+                            <div class="w-3/4 md:text-left">
+                                <div class="text-sm"><i class="fa fa-caret-left text-primary"></i> 上一篇</div>
+                                <h4><a href="{{ prev_post.get_post_url }}">{{ prev_post.title }}</a></h4>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="flex w-full md:w-1/2 justify-between items-center space-x-2">
+                        {% if next_post %}
+                            <div class="w-3/4  md:text-right">
+                                <div class="text-sm">下一篇 <i class="fa fa-caret-right"></i></div>
+                                <h4><a href="{{ next_post.get_post_url }}">{{ next_post.title }}</a></h4>
+                            </div>
+                            <div class="w-1/4">
+                                {% if next_post.img %}
+                                    <img class="w-full h-20 rounded-md" src="{{ next_post.img.url }}"
+                                         alt="{{ next_post.img.url }}">
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <!--作者信息-->
+                <div class="p-4 flex justify-between rounded-md bg-gray-100">
+                    <div class="w-1/6 mr-4">
+                        <img class="px-4 w-full h-20" src="{{ item.author.profile.avatar.url }}"
+                             alt="{{ item.author.profile.fullname }}">
+                    </div>
+                    <div class="w-5/6">
+                        <h4 class="text-xl font-light mb-4">{{ item.author.profile.fullname }}</h4>
+                        <p class="text-sm text-blog-dark">
+                            {{ item.author.profile.bio|safe }}
+                        </p>
+                    </div>
+                </div>
+                <!--日志评论-->
+                <div class="my-6">
+                    <form action="" method="post">
+                        {% csrf_token %}
+                        {#                        <input placeholder="请输入用户名" name="name" id="name" class="mb-2 border rounded-md p-2 text-sm">#}
+                        {#                        <textarea placeholder="请留下你的评论" class="w-full border rounded-md p-2 text-sm" name="body"#}
+                        {#                                  id="body" cols="30" rows="3"></textarea>#}
+                        {{ form.name }}
+                        {{ form.body }}
+                        <div class="text-right my-2">
+                            <input type="submit" value="提交"
+                                   class="bg-primary py-1 px-4 text-sm text-white rounded-full cursor-pointer">
+                            <input type="reset" value="取消"
+                                   class="border py-1 px-4 text-sm text-black rounded-full cursor-pointer">
+                        </div>
+                    </form>
+                    <h4 class="text-xl border-b py-4 mb-4"><span class="border-b-4 border-primary py-4">精彩评论</span>
+                    </h4>
+                    {% for comment in item.filtered_comments.all %}
+                        <div class="flex my-4">
+                            <div class="mr-4">
+                                <img class="rounded-full" src="https://picsum.photos/40" alt="{{ comment.name }}">
+                            </div>
+                            <div>
+                                <h4>{{ comment.name }}</h4>
+                                <p class="text-sm space-x-4">
+                                    <span>{{ comment.created_time }}</span><span>{{ comment.ip }}</span></p>
+                                <p class="text-sm my-2"><span>{{ comment.body }}</span></p>
+                                <hr/>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <!--右侧边栏-->
+        <div class="w-full md:w-1/4 bg-white p-2">
+            <!--Weather-->
+            <div class="w-full relative py-4">
+                <img class="w-full" src="https://picsum.photos/id/1041/400/360" alt="weather"/>
+                <div class="absolute top-10 left-12 text-white">
+                    <div class="text-xl mb-2">北京</div>
+                    <div class="text-4xl mb-2">天气晴</div>
+                    <div class="text-2xl mb-2">15°</div>
+                </div>
+            </div>
+
+            {% include 'segment/categories.html' %}
+
+            {% include 'segment/chose-posts.html' %}
+
+            {% include 'segment/latest-posts.html' %}
+
+            {% display_popular_posts 3%}
+
+            {% display_tags %}
+
+
+        </div>
+
+
+    </main>
+
+{% endblock %}

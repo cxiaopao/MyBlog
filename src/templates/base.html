@@ -1,0 +1,155 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}博客系统{% endblock %}</title>
+    <link href="{% static "css/style.css" %}" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/9b92cc1fba.js" crossorigin="anonymous"></script>
+    {% block header %}{% endblock %}
+</head>
+<body class="bg-gray-200">
+<!--Header-->
+<header class="bg-gray-100">
+    <!--Menu-->
+    <nav class="container">
+        <!--PC-->
+        <div class="pc-menu flex justify-between py-4 mx-4 md:mx-0">
+            <div class="flex justify-between items-center">
+                <a class="bx-2 by-2 mr-2" href="/"><img class="w-8 h-8" src="{% static "images/logo.svg" %}"
+                                                        alt="logo"/></a>
+                <span class="font-bold text-sm text-blog-dark">博客管理系统</span>
+            </div>
+            <ul class="hidden md:flex justify-between items-center space-x-6">
+                <li class="px-2 py-2 text-sm font-bold text-blog-dark"><a href="/"><i
+                        class="fa fa-home mr-1 text-primary"></i>首页</a></li>
+                <li class="px-2 py-2 text-sm font-bold text-blog-dark"><a href="{% url 'posts' %}"><i
+                        class="fa fa-newspaper mr-1 text-primary"></i>文章列表</a></li>
+                <li class="px-2 py-2 text-sm font-bold text-blog-dark"><a href="{% url 'about' %}"><i
+                        class="fa fa-laptop-code mr-1 text-primary"></i>关于我</a></li>
+            </ul>
+            <div class="hidden md:flex items-center space-x-5">
+                <form action="{% url 'search_posts' %}">
+                    <div class="relative">
+                        <input name="q" id='q' value="{{ request.GET.q }}"
+                               class="h-10 px-5 pr-10 focus:outline-none rounded-full text-sm" type="search"
+                               autocomplete="false"
+                               placeholder="搜索">
+                        <button class="absolute top-0 right-0 mt-1 mr-2" type="submit">
+                            <img class="w-8 h-8" src="{% static "images/search.svg" %}" alt="search"/>
+                        </button>
+                    </div>
+                </form>
+                <div>
+                    <a class="bg-primary px-4 py-2 text-white text-sm rounded-full" href="/admin"><i
+                            class="fa fa-keyboard pr-2"></i>写文章</a>
+                </div>
+            </div>
+
+            <div class="flex items-center md:hidden">
+                <button class="mobile-menu-button"><i class="fa fa-bars text-2xl"></i></button>
+            </div>
+        </div>
+
+        <!--Mobile-->
+        <ul class="mobile-menu hidden md:hidden">
+            <li class="block px-4 py-2 mx-4 text-sm font-bold  text-blog-dark hover:bg-blog-dark hover:text-white"><a
+                    href="/"><i
+                    class="fa fa-home pr-1 text-primary "></i>首页</a></li>
+            <li class="block px-4 py-2 mx-4 text-sm font-bold text-blog-dark hover:bg-blog-dark hover:text-white"><a
+                    href="{% url 'posts' %}"><i
+                    class="fa fa-newspaper pr-2 text-primary"></i>博文日志</a></li>
+            <li class="block px-4 py-2 mx-4 text-sm font-bold text-blog-dark hover:bg-blog-dark hover:text-white"><a
+                    href="{% url 'about' %}"><i
+                    class="fa fa-laptop-code pr-1 text-primary"></i>关于我</a></li>
+        </ul>
+    </nav>
+</header>
+
+<!--Breadcrumbs-->
+{% block breadcrumb %}
+    <nav class="bg-gray-50">
+        <div class="container">
+            <ul class="mx-4 py-2 inline-flex items-center space-x-1 md:space-x-3 text-sm text-blog-dark">
+                <li><a href="#"><i class="fa fa-home mr-1"></i>首页</a></li>
+                <li><a href="#"><i class="fa fa-chevron-right mr-2"></i>博文日志</a></li>
+                <li><i class="fa fa-chevron-right mr-2"></i><span class="text-gray-400">列表</span></li>
+            </ul>
+        </div>
+    </nav>
+{% endblock %}
+
+<!--Content-->
+{% block content %}{% endblock %}
+
+<!--Footer-->
+<div class="bg-blog-dark">
+    <div class="container hidden md:block">
+        <div class="flex justify-between text-gray-300 pt-10 pb-5 px-4">
+            <div class="w-1/4 mr-3">
+                <div class="flex items-center space-x-4 pb-3">
+                    <a href="/"><img class="w-full h-10" src="{% static "images/logo.svg" %}"></a>
+                    <span class="font-bold">博客系统</span>
+                </div>
+                <p class="text-sm font-light">本博客系统是一个基于Django开发的简易博客系统，使用Django4.2开发。</p>
+            </div>
+            <div class="w-1/4 mr-3">
+                <h4 class="font-bold mb-3">最新日志</h4>
+                <ul class="font-light text-sm ">
+                    {% for LATEST_POST in LATEST_POSTS %}
+                        <li class="hover:text-primary"><a href="{{ LATEST_POST.get_post_url }}"><i
+                                class="fa fa-angle-right pr-1"></i>{{ LATEST_POST.title }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div class="w-1/4 mr-3">
+                <h4 class="font-bold mb-3">推荐阅读</h4>
+                <ul class="font-light text-sm ">
+                    {% for CHOSE_POST in CHOSE_POSTS %}
+                        <li class="hover:text-primary"><a href="{{ CHOSE_POST.get_post_url }}"><i
+                                class="fa fa-angle-right pr-1"></i>{{ CHOSE_POST.title }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+
+            <div class="w-1/4 mr-3">
+                <h4 class="font-bold mb-3">快速链接</h4>
+                <ul class="font-light text-sm ">
+                    <li class="hover:text-primary"><a href="/"><i class="fa fa-angle-right pr-1"></i>首页</a></li>
+                    <li class="hover:text-primary"><a href="{% url 'posts' %}"><i class="fa fa-angle-right pr-1"></i>博文日志</a>
+                    </li>
+                    <li class="hover:text-primary"><a href="{% url 'about' %}"><i class="fa fa-angle-right pr-1"></i>关于我</a>
+                    </li>
+                </ul>
+            </div>
+
+
+        </div>
+    </div>
+
+    <!--Copyright-->
+    <div class="py-3 text-white text-center text-sm bg-black">
+        <p>Copyright &copy; 2023 UNJUN 版权所有</p>
+    </div>
+
+</div>
+
+<!--scripts-->
+{% block scripts %}{% endblock %}
+
+</body>
+
+
+<script>
+    // 切换显示移动端菜单导航
+    let mobileMenuButton = document.querySelector('.mobile-menu-button');
+    let mobileMenu = document.querySelector('.mobile-menu');
+    mobileMenuButton.addEventListener('click', function () {
+        mobileMenu.classList.toggle('hidden');
+    });
+</script>
+
+</html>

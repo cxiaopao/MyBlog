@@ -1,0 +1,15 @@
+<!--Chosen article-->
+<div class="mb-2">
+    <h2 class="py-2 border-b">
+        <span class="border-b-4 border-primary text-xl font-bold py-2">推荐阅读</span>
+    </h2>
+    <ul>
+        {% for CHOSE_POST in CHOSE_POSTS %}
+            <li class="py-2 border-b mb-3 ">
+                <a class="hover:text-primary flex justify-between items-center" href="{{ CHOSE_POST.get_post_url }}">
+                    <span><i class="fa fa-angle-right pr-1"></i>{{ CHOSE_POST.title }}</span>
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+</div>

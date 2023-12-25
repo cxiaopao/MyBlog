@@ -1,0 +1,16 @@
+<!--Categories-->
+<div class="mb-2">
+    <h2 class="py-2 border-b ">
+        <span class="border-b-4 border-primary text-xl font-bold py-2">分类目录</span>
+    </h2>
+    <ul>
+        {% for CATEGORY in CATEGORIES %}
+            <li class="py-2 border-b mb-3 ">
+                <a class="flex justify-between items-center hover:text-primary" href="{% url 'posts' %}?category={{ CATEGORY.id }}">
+                    <span><i class="fa fa-angle-right pr-1"></i>{{ CATEGORY.name }}</span>
+                    <span class="rounded-full bg-primary px-2 py-1 text-sm text-white">{{ CATEGORY.posts__count }}</span>
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+</div>

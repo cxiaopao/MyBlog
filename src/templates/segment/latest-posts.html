@@ -1,0 +1,15 @@
+<!--Latest article-->
+<div class="mb-2">
+    <h2 class="py-2 border-b">
+        <span class="border-b-4 border-primary text-xl font-bold py-2">最新文章</span>
+    </h2>
+    <ul>
+        {% for LATEST_POST in LATEST_POSTS %}
+            <li class="py-2 border-b mb-3 ">
+                <a class="hover:text-primary flex justify-between items-center" href="{{ LATEST_POST.get_post_url }}">
+                    <span><i class="fa fa-angle-right pr-1"></i>{{ LATEST_POST.title }}</span>
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+</div>
